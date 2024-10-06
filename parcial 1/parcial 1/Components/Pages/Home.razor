@@ -1,0 +1,61 @@
+﻿@page "/"
+@inject parcial_1.Data.AppDbContext dbContext
+@using Microsoft.EntityFrameworkCore
+@using parcial_1.Data
+
+<PageTitle>Home</PageTitle>
+
+<h1>Lista de Tardanzas</h1>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-primary" href="/Tardanza">Agregar Tardanza</a>
+</div>
+
+@if (estudiantes == null)
+{
+    <p>Cargando...</p>
+}
+else if (!estudiantes.Any())
+{
+    <p>No hay estudiantes que hayan llegado tarde.</p>
+}
+else
+{
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>Matrícula</th>
+                    <th>Curso</th>
+                    <th>Motivo de Tardanza</th>
+                    <th>Fecha</th> <!-- Nueva columna para la fecha -->
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var estudiante in estudiantes)
+                {
+                    <tr>
+                        <td>@estudiante.NombreCompleto</td>
+                        <td>@estudiante.Matricula</td>
+                        <td>@estudiante.Curso</td>
+                        <td>@estudiante.Motivo</td>
+                        <td>@estudiante.Fecha.ToShortDateString()</td> <!-- Mostrar la fecha -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Estudiante> estudiantes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar los estudiantes tardíos desde la base de datos
+        estudiantes = await dbContext.EstudiantesTarde.ToListAsync();
+    }
+}
+
+

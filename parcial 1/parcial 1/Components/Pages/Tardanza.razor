@@ -1,0 +1,75 @@
+﻿@page "/Tardanza"
+@inject parcial_1.Data.AppDbContext dbContext
+@using parcial_1.Data
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Agregar Tardanza</PageTitle>
+
+<h1>Agregar una tardanza</h1>
+
+<EditForm Model="nuevoEstudiante" OnValidSubmit="HandleValidSubmit" class="edit-form" FormName="AgregarTardanza">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="nombreCompleto" class="form-label">Nombre Completo</label>
+        <InputText id="nombreCompleto" @bind-Value="nuevoEstudiante.NombreCompleto" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="matricula" class="form-label">Matrícula</label>
+        <InputText id="matricula" @bind-Value="nuevoEstudiante.Matricula" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="curso" class="form-label">Curso</label>
+        <InputText id="curso" @bind-Value="nuevoEstudiante.Curso" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="motivo" class="form-label">Motivo de Tardanza</label>
+        <InputText id="motivo" @bind-Value="nuevoEstudiante.Motivo" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="fecha" class="form-label">Fecha</label>
+        <InputDate id="fecha" @bind-Value="nuevoEstudiante.Fecha" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Agregar Tardanza</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="VolverAPaginaPrincipal">Volver</button>
+</EditForm>
+
+@if (mensaje != null)
+{
+    <div class="alert alert-success mt-3">@mensaje</div>
+}
+
+@code {
+    private Estudiante nuevoEstudiante = new Estudiante();
+    private string mensaje;
+
+    private async Task HandleValidSubmit()
+    {
+        // Agregar el nuevo estudiante a la base de datos
+        dbContext.EstudiantesTarde.Add(nuevoEstudiante);
+        await dbContext.SaveChangesAsync();
+
+        // Mostrar un mensaje de éxito
+        mensaje = "Tardanza agregada exitosamente.";
+
+        // Limpiar el formulario
+        nuevoEstudiante = new Estudiante();
+    }
+
+    // Método para redirigir a la página principal
+    private void VolverAPaginaPrincipal()
+    {
+        navigationManager.NavigateTo("/");
+    }
+}
+
+
+
+
